@@ -65,6 +65,9 @@ class Rover():
         self.actions = []
         self.__InitPositionRotation()
 
+    def print(self, msg):
+        print(f"{self.name}: {msg}")
+    
     def parse_and_execute_cmd(self, command):
         print ("Translated code: \n" + Translate.translate(ROVER_COMMAND[self.name]))
 
