@@ -2,6 +2,10 @@ import multiprocessing
 import pathlib
 import time
 import traceback
+from enum import Enum
+from random import randint
+from random import choice
+import os
 from translate import *
 from MapAndRotation import Map,Rotation
 from random import randint
@@ -53,7 +57,6 @@ def get_command(rover_name):
             pass
         return True
     return False
-
 
 class Rover():
     def __init__(self, name,map):
