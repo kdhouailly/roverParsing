@@ -3,6 +3,9 @@ import pathlib
 import time
 import traceback
 from translate import *
+from MapAndRotation import Map,Rotation
+from random import randint
+from random import choice
 
 # The maximum amount of time that the rover can run in seconds
 MAX_RUNTIME = 36000
@@ -53,14 +56,13 @@ def get_command(rover_name):
 
 
 class Rover():
-    def __init__(self, name):
+    def __init__(self, name,map):
         self.name = name
-
-    def print(self, msg):
-        print(f"{self.name}: {msg}")
+        self.map = map
+        self.actions = []
+        self.__InitPositionRotation()
 
     def parse_and_execute_cmd(self, command):
-        
         print ("Translated code: \n" + Translate.translate(ROVER_COMMAND[self.name]))
 
     def wait_for_command(self):
@@ -79,12 +81,98 @@ class Rover():
                     self.print(traceback.format_exc())
                 finally:
                     self.print("Finished running command.\n\n")
+    
+    def __InitPositionRotation(self):
+        self.rotation = choice(list(Rotation))
+        while True:
+            self.x = randint(0,len(self.map.matriceMap)-1)
+            self.y = randint(0,len(self.map.matriceMap[0])-1)
+            if self.map.matriceMap[self.x][self.y] != "X":
+                break
+        print(f"\nRotation = {self.rotation} ; x = {self.x} ; y = {self.y} ; Case = '{self.map.matriceMap[self.x][self.y]}'")
+        self.oldCase = self.map.matriceMap[self.x][self.y]
+        self.map.matriceMap[self.x][self.y] = "@"
+        print("Init Map :")
+        self.map.printMap()
+    def MoveForward(self):
+        if self.rotation == Rotation.E or self.rotation == Rotation.W:
+            if (self.rotation == Rotation.E):
+                if self.__IsPossibleToMoveHere(self.x,self.y+1):
+                    self.__ChangePosition(self.x,self.y+1) 
+                else:
+                    print("Error")
+            else:
+                if self.__IsPossibleToMoveHere(self.x,self.y-1):
+                    self.__ChangePosition(self.x,self.y-1)
+                else:
+                    print("Error")
+        else:
+            if (self.rotation == Rotation.N):
+                if self.__IsPossibleToMoveHere(self.x-1,self.y):
+                    self.__ChangePosition(self.x-1,self.y)
+                else:
+                    print("Error")
+            else:
+                if self.__IsPossibleToMoveHere(self.x+1,self.y):
+                    self.__ChangePosition(self.x+1,self.y)
+                else:
+                    print("Error")
+    def MoveBackward(self):
+        if self.rotation == Rotation.E or self.rotation == Rotation.W:
+            if (self.rotation == Rotation.E):
+                if self.__IsPossibleToMoveHere(self.x,self.y-1):
+                    self.__ChangePosition(self.x,self.y-1) 
+                else:
+                    print("Error")
+            else:
+                if self.__IsPossibleToMoveHere(self.x,self.y+1):
+                    self.__ChangePosition(self.x,self.y+1)
+                else:
+                    print("Error")
+        else:
+            if (self.rotation == Rotation.N):
+                if self.__IsPossibleToMoveHere(self.x+1,self.y):
+                    self.__ChangePosition(self.x+1,self.y)
+                else:
+                    print("Error")
+            else:
+                if self.__IsPossibleToMoveHere(self.x-1,self.y):
+                    self.__ChangePosition(self.x-1,self.y)
+                else:
+                    print("Error")
+    def TurnLeft(self):
+        self.rotation = Rotation.GetRotation(self.rotation,-1)
+        print(f"\nRotation = {self.rotation}")
+    def TurnRight(self):
+        self.rotation = Rotation.GetRotation(self.rotation,1)
+        print(f"\nRotation = {self.rotation}")
+    def __IsPossibleToMoveHere(self,x,y):
+        if x>=0 and x < len(self.map.matriceMap) and y>=0 and y < len(self.map.matriceMap[0]):
+            if self.map.matriceMap[x][y] != "X":
+                return True
+        return False
+    def AddAction(self,action):
+        self.actions.append(action)
+    def __ChangePosition(self,x,y):
+        self.map.matriceMap[self.x][self.y] = self.oldCase
+        self.x = x
+        self.y = y
+        self.oldCase = self.map.matriceMap[self.x][self.y]
+        self.map.matriceMap[self.x][self.y] = "@"
+        self.map.printMap()
+    def Run(self):
+        for action in self.actions:
+            print("\n"+action.__name__)
+            action(self)
+    def Info(self):
+        print(f"\nRotation = {self.rotation} ; x = {self.x} ; y = {self.y}")
 
 
 def main():
     # Initialize the rovers
-    rover1 = Rover(ROVER_1)
-    rover2 = Rover(ROVER_2)
+    map = Map("map.txt")
+    rover1 = Rover(ROVER_1,map)
+    rover2 = Rover(ROVER_2,map)
     my_rovers = [rover1, rover2]
 
     # Run the rovers in parallel
