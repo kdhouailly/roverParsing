@@ -2,7 +2,7 @@ import multiprocessing
 import pathlib
 import time
 import traceback
-
+from translate import *
 
 # The maximum amount of time that the rover can run in seconds
 MAX_RUNTIME = 36000
@@ -43,7 +43,7 @@ def get_command(rover_name):
     """
     fcontent = None
     with ROVER_COMMAND_FILES[rover_name].open() as f:
-        fcontent = f.read()
+        fcontent = f.readlines()
     if fcontent is not None and fcontent:
         ROVER_COMMAND[rover_name] = fcontent
         with ROVER_COMMAND_FILES[rover_name].open("w+") as f:
@@ -60,8 +60,8 @@ class Rover():
         print(f"{self.name}: {msg}")
 
     def parse_and_execute_cmd(self, command):
-        self.print(f"Running command: {command}")
-        pass
+        
+        print ("Translated code: \n" + Translate.translate(ROVER_COMMAND[self.name]))
 
     def wait_for_command(self):
         start = time.time()
