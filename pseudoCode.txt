@@ -1,0 +1,22 @@
+{
+	int i ;
+    int k ;
+    k = 9 ;
+    while ( k == 9) {
+        i = 9 ;
+        if ( true ) {
+            o = "Y"
+            if ( i == k && ( i != 0 || i != 5 ) ){
+                u = "N"
+                break ;
+            }
+            else {
+                p = "bonjour" ; 
+            }
+        }
+    }
+    char c ;
+    c = "lol" ;
+    a = A() ;
+    A.bonjour() ; 
+}
