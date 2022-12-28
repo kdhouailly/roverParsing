@@ -93,7 +93,7 @@ class Rover():
         while True:
             self.x = randint(0,len(self.map.matriceMap)-1)
             self.y = randint(0,len(self.map.matriceMap[0])-1)
-            if self.map.matriceMap[self.x][self.y] != "X":
+            if self.map.matriceMap[self.x][self.y] == " ":
                 break
         print(f"\nRotation = {self.rotation} ; x = {self.x} ; y = {self.y} ; Case = '{self.map.matriceMap[self.x][self.y]}'")
         self.oldCase = self.map.matriceMap[self.x][self.y]
