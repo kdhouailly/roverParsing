@@ -154,7 +154,7 @@ class Rover():
         print(f"\nRotation = {self.rotation}")
     def __IsPossibleToMoveHere(self,x,y):
         if x>=0 and x < len(self.map.matriceMap) and y>=0 and y < len(self.map.matriceMap[0]):
-            if self.map.matriceMap[x][y] != "X":
+            if self.map.matriceMap[x][y] != "X" and self.map.matriceMap[x][y] != "@":
                 return True
         return False
     def AddAction(self,action):
