@@ -2,6 +2,10 @@ import multiprocessing
 import pathlib
 import time
 import traceback
+from enum import Enum
+from random import randint
+from random import choice
+import os
 from translate import *
 
 # The maximum amount of time that the rover can run in seconds
@@ -50,7 +54,6 @@ def get_command(rover_name):
             pass
         return True
     return False
-
 
 class Rover():
     def __init__(self, name):

@@ -38,5 +38,7 @@ class Translate:
                 code += indent + str(PythonKeyWord.BREAK) + "\n"
             elif line[0] == PythonKeyWord.RETURN:
                 code += indent + str(PythonKeyWord.RETURN) + " " + line[1] +"\n"
-        
+            elif line[0] == PythonKeyWord.ROBOT:
+               code += indent + "".join(line).replace(";","") + "\n"
+
         return code

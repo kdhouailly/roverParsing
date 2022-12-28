@@ -18,5 +18,5 @@
     char c ;
     c = "lol" ;
     a = A() ;
-    A.bonjour() ; 
+    robot . bonjour() ; 
 }
