@@ -24,7 +24,7 @@ class PythonKeyWord(PythonDetection):
     WHILE = "while"
     BREAK = "break"
     RETURN = "return"
-    ROBOT = 'robot'
+    ROVER = 'rover'
 
 class PythonFunctionRobot(PythonDetection):
     INFO = "INFO"

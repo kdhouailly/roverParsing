@@ -14,6 +14,7 @@ class Translate:
     def translate (lines):
         code = ""
         indent = ""
+        nbLine = 1
         for line in lines:
             line = line.replace("true","True")
             line = line.replace("false","False")
@@ -38,7 +39,13 @@ class Translate:
                 code += indent + str(PythonKeyWord.BREAK) + "\n"
             elif line[0] == PythonKeyWord.RETURN:
                 code += indent + str(PythonKeyWord.RETURN) + " " + line[1] +"\n"
-            elif line[0] == PythonKeyWord.ROBOT:
-               code += indent + "".join(line).replace(";","") + "\n"
+            elif line[0] == PythonKeyWord.ROVER:
+               code += (indent + "".join(line).replace(";","") + "\n").replace("rover","self")
+            elif PythonType.has_value(line[0]):
+                pass
+            else:
+                print(f"Traduction error in line ${nbLine}")
+                
+            nbLine += 1
 
         return code

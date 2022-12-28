@@ -69,24 +69,31 @@ class Rover():
         print(f"{self.name}: {msg}")
     
     def parse_and_execute_cmd(self, command):
-        print ("Translated code: \n" + Translate.translate(ROVER_COMMAND[self.name]))
+        roverPythonCode = Translate.translate(ROVER_COMMAND[self.name])
+        self.print ("Translated code: \n" + roverPythonCode)
+
+        try:
+            exec(roverPythonCode)
+        except:
+            self.print("Erreur de synthaxe liée au pseudo code")
 
     def wait_for_command(self):
         start = time.time()
         while (time.time() - start) < MAX_RUNTIME:
             # Sleep 1 second before trying to check for
             # content again
-            self.print("Waiting for command...")
+            #self.print("Waiting for command...")
             time.sleep(1)
             if get_command(self.name):
                 self.print("Found a command...")
-                try:
-                    self.parse_and_execute_cmd(ROVER_COMMAND[self.name])
-                except Exception as e:
-                    self.print(f"Failed to run command: {ROVER_COMMAND[self.name]}")
-                    self.print(traceback.format_exc())
-                finally:
-                    self.print("Finished running command.\n\n")
+                self.parse_and_execute_cmd(ROVER_COMMAND[self.name])
+                # try:
+                #    self.parse_and_execute_cmd(ROVER_COMMAND[self.name])
+                # except Exception as e:
+                #     self.print(f"Failed to run command: {ROVER_COMMAND[self.name]}")
+                #     self.print(traceback.format_exc())
+                # finally:
+                #     self.print("Finished running command.\n\n")
     
     def __InitPositionRotation(self):
         self.rotation = choice(list(Rotation))
@@ -95,10 +102,9 @@ class Rover():
             self.y = randint(0,len(self.map.matriceMap[0])-1)
             if self.map.matriceMap[self.x][self.y] == " ":
                 break
-        print(f"\nRotation = {self.rotation} ; x = {self.x} ; y = {self.y} ; Case = '{self.map.matriceMap[self.x][self.y]}'")
+        self.print(f"Init Map : Rotation = {self.rotation} ; x = {self.x} ; y = {self.y} ; Case = '{self.map.matriceMap[self.x][self.y]}'")
         self.oldCase = self.map.matriceMap[self.x][self.y]
         self.map.matriceMap[self.x][self.y] = "@"
-        print("Init Map :")
         self.map.printMap()
     def MoveForward(self):
         if self.rotation == Rotation.E or self.rotation == Rotation.W:
@@ -106,59 +112,59 @@ class Rover():
                 if self.__IsPossibleToMoveHere(self.x,self.y+1):
                     self.__ChangePosition(self.x,self.y+1) 
                 else:
-                    print("Error")
+                    self.print("Error")
             else:
                 if self.__IsPossibleToMoveHere(self.x,self.y-1):
                     self.__ChangePosition(self.x,self.y-1)
                 else:
-                    print("Error")
+                    self.print("Error")
         else:
             if (self.rotation == Rotation.N):
                 if self.__IsPossibleToMoveHere(self.x-1,self.y):
                     self.__ChangePosition(self.x-1,self.y)
                 else:
-                    print("Error")
+                    self.print("Error")
             else:
                 if self.__IsPossibleToMoveHere(self.x+1,self.y):
                     self.__ChangePosition(self.x+1,self.y)
                 else:
-                    print("Error")
+                    self.print("Error")
     def MoveBackward(self):
         if self.rotation == Rotation.E or self.rotation == Rotation.W:
             if (self.rotation == Rotation.E):
                 if self.__IsPossibleToMoveHere(self.x,self.y-1):
                     self.__ChangePosition(self.x,self.y-1) 
                 else:
-                    print("Error")
+                    self.print("Error")
             else:
                 if self.__IsPossibleToMoveHere(self.x,self.y+1):
                     self.__ChangePosition(self.x,self.y+1)
                 else:
-                    print("Error")
+                    self.print("Error")
         else:
             if (self.rotation == Rotation.N):
                 if self.__IsPossibleToMoveHere(self.x+1,self.y):
                     self.__ChangePosition(self.x+1,self.y)
                 else:
-                    print("Error")
+                    self.print("Error")
             else:
                 if self.__IsPossibleToMoveHere(self.x-1,self.y):
                     self.__ChangePosition(self.x-1,self.y)
                 else:
-                    print("Error")
+                    self.print("Error")
     def TurnLeft(self):
         self.rotation = Rotation.GetRotation(self.rotation,-1)
-        print(f"\nRotation = {self.rotation}")
+        self.print(f"Rotation = {self.rotation}")
     def TurnRight(self):
         self.rotation = Rotation.GetRotation(self.rotation,1)
-        print(f"\nRotation = {self.rotation}")
+        self.print(f"Rotation = {self.rotation}")
     def __IsPossibleToMoveHere(self,x,y):
         if x>=0 and x < len(self.map.matriceMap) and y>=0 and y < len(self.map.matriceMap[0]):
             if self.map.matriceMap[x][y] != "X" and self.map.matriceMap[x][y] != "@":
                 return True
         return False
-    def AddAction(self,action):
-        self.actions.append(action)
+    # def AddAction(self,action):
+    #     self.actions.append(action)
     def __ChangePosition(self,x,y):
         self.map.matriceMap[self.x][self.y] = self.oldCase
         self.x = x
@@ -166,12 +172,12 @@ class Rover():
         self.oldCase = self.map.matriceMap[self.x][self.y]
         self.map.matriceMap[self.x][self.y] = "@"
         self.map.printMap()
-    def Run(self):
-        for action in self.actions:
-            print("\n"+action.__name__)
-            action(self)
+    # def Run(self):
+    #     for action in self.actions:
+    #         print("\n"+action.__name__)
+    #         action(self)
     def Info(self):
-        print(f"\nRotation = {self.rotation} ; x = {self.x} ; y = {self.y}")
+        self.print(f"Rotation = {self.rotation} ; x = {self.x} ; y = {self.y}")
 
 
 def main():

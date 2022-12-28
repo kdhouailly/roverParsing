@@ -26,3 +26,4 @@ class Map:
         print()
         for i in self.matriceMap:
             print("".join(i))
+        print()
