@@ -66,6 +66,8 @@ class Rover():
     def __init__(self, name):
         self.name = name
         self.actions = []
+        self.state = True
+        self.nbD = 0
 
     def print(self, msg):
         print(f"{self.name}: {msg}")
@@ -97,7 +99,7 @@ class Rover():
                 #     self.print("Finished running command.\n\n")
     
     def SetMap(self, map):
-        self.map = map
+        self.map:Map = map
         self.__InitPositionRotation()
 
     def __InitPositionRotation(self):
@@ -172,12 +174,15 @@ class Rover():
         self.rotation = Rotation.GetRotation(self.rotation,1)
         self.print(f"Rotation = {self.rotation}")
     def __IsPossibleToMoveHere(self,x,y):
-        if x>=0 and x < len(self.map.matriceMap) and y>=0 and y < len(self.map.matriceMap[0]):
-            if self.map.matriceMap[x][y] != "X" and self.map.matriceMap[x][y] != "@":
-                return True
-        return False
-    # def AddAction(self,action):
-    #     self.actions.append(action)
+        if self.state :
+            if x>=0 and x < len(self.map.matriceMap) and y>=0 and y < len(self.map.matriceMap[0]):
+                if self.map.matriceMap[x][y] != "X" and self.map.matriceMap[x][y] != "@":
+                    return True
+            return False
+        else:
+            self.print("Rover is disable")
+            return False
+
     def __ChangePosition(self,x,y):
         self.map.matriceMap[self.x][self.y] = self.oldCase
         self.x = x
@@ -186,10 +191,7 @@ class Rover():
         self.map.matriceMap[self.x][self.y] = "@"
         self.__IsSpecialBlock()
         self.map.printMap()
-    # def Run(self):
-    #     for action in self.actions:
-    #         print("\n"+action.__name__)
-    #         action(self)
+
     def Info(self):
         self.print(f"Rotation = {self.rotation} ; x = {self.x} ; y = {self.y}")
     
@@ -197,6 +199,7 @@ class Rover():
         match self.oldCase:
             case SpecialBlock.BlockD:
                 self.print("Une Case D")
+                self.nbD += 1
             case _:
                 pass
     
@@ -212,7 +215,39 @@ class Rover():
     def FullBackward(self):
         while(self.MoveBackward()):
             pass
-
+    def __ChangeState(self, newstate=None):
+        if newstate == None:
+            self.state = not self.state
+        else:
+            self.state = newstate
+    
+    def SelfDesactivation(self):
+        self.__ChangeState(False)
+    
+    def Shoot(self):
+        match self.rotation:
+            case Rotation.N:
+                for x in range(self.x, 0, -1):
+                    rover:Rover = self.map.IsRoverHere(x,self.y)
+                    if rover:
+                        rover.SelfDesactivation()
+            case Rotation.S:
+                for x in range(self.x, len(self.map.matriceMap), 1):
+                    rover:Rover = self.map.IsRoverHere(x,self.y)
+                    if rover:
+                        rover.SelfDesactivation()
+            case Rotation.E:
+                for y in range(self.y, len(self.map.matriceMap[0]), 1):
+                    rover:Rover = self.map.IsRoverHere(self.x,y)
+                    if rover:
+                        rover.SelfDesactivation()
+            case Rotation.W:
+                for y in range(self.y, 0, -1):
+                    rover:Rover = self.map.IsRoverHere(self.x,y)
+                    if rover:
+                        rover.SelfDesactivation()
+                    
+    
 
 def main():
     # Initialize the rovers

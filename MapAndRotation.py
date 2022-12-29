@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Rotation(Enum):
     N = 0
     E = 1
@@ -38,3 +39,9 @@ class Map:
         
         for rover in self.rovers:
             rover.SetMap(self)
+    
+    def IsRoverHere(self,x,y):
+        for rover in self.rovers:
+            if rover.x == x and rover.y == y:
+                return rover
+        return None
