@@ -44,7 +44,7 @@ class Translate:
             elif PythonType.has_value(line[0]):
                 pass
             else:
-                print(f"Traduction error in line ${nbLine}")
+                print(f"Traduction error in line {nbLine}")
                 
             nbLine += 1
 
