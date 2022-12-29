@@ -1,3 +1,4 @@
 {
-    # print(self.map) ;
+    rover . TurnLeft () ;
+    rover . Shoot () ;
 }
