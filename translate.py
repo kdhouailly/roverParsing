@@ -45,6 +45,8 @@ class Translate:
                 pass
             elif line[0] == PythonFunctionRobot.MAPCHANGE:
                 code += indent + "self.map." + "".join(line).replace(";","") + "\n"
+            elif line[0] == "#":
+                code += indent + ("".join(line).replace("#","").replace(";",""))
             else:
                 print(f"Traduction error in line {nbLine}")
                 

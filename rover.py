@@ -65,6 +65,7 @@ def get_command(rover_name):
 class Rover():
     def __init__(self, name):
         self.name = name
+        self.id = name[-1]
         self.actions = []
         self.state = True
         self.nbD = 0
@@ -109,9 +110,9 @@ class Rover():
             self.y = randint(0,len(self.map.matriceMap[0])-1)
             if self.map.matriceMap[self.x][self.y] == " ":
                 break
-        self.print(f"Init Map : Rotation = {self.rotation} ; x = {self.x} ; y = {self.y} ; Case = '{self.map.matriceMap[self.x][self.y]}'")
+        self.print(f"Init Map : {self.rotation} ; x = {self.x} ; y = {self.y} ; state = {self.state}")
         self.oldCase = self.map.matriceMap[self.x][self.y]
-        self.map.matriceMap[self.x][self.y] = "@"
+        self.map.matriceMap[self.x][self.y] = self.id
         self.map.printMap()
     def MoveForward(self):
         if self.rotation == Rotation.E or self.rotation == Rotation.W:
@@ -176,7 +177,7 @@ class Rover():
     def __IsPossibleToMoveHere(self,x,y):
         if self.state :
             if x>=0 and x < len(self.map.matriceMap) and y>=0 and y < len(self.map.matriceMap[0]):
-                if self.map.matriceMap[x][y] != "X" and self.map.matriceMap[x][y] != "@":
+                if self.map.matriceMap[x][y] != "X" and self.map.matriceMap[x][y] != self.id:
                     return True
             return False
         else:
@@ -188,12 +189,12 @@ class Rover():
         self.x = x
         self.y = y
         self.oldCase = self.map.matriceMap[self.x][self.y]
-        self.map.matriceMap[self.x][self.y] = "@"
+        self.map.matriceMap[self.x][self.y] = self.id
         self.__IsSpecialBlock()
         self.map.printMap()
 
     def Info(self):
-        self.print(f"Rotation = {self.rotation} ; x = {self.x} ; y = {self.y}")
+        self.print(f"{self.rotation} ; x = {self.x} ; y = {self.y} ; state = {self.state} ; add {self}")
     
     def __IsSpecialBlock(self):
         match self.oldCase:
@@ -215,39 +216,40 @@ class Rover():
     def FullBackward(self):
         while(self.MoveBackward()):
             pass
-    def __ChangeState(self, newstate=None):
-        if newstate == None:
-            self.state = not self.state
-        else:
-            self.state = newstate
-    
-    def SelfDesactivation(self):
-        self.__ChangeState(False)
     
     def Shoot(self):
+        self.print("Shoot")
         match self.rotation:
             case Rotation.N:
                 for x in range(self.x, 0, -1):
-                    rover:Rover = self.map.IsRoverHere(x,self.y)
+                    rover:Rover = self.map.IsRoverHere(x,self.y,self)
                     if rover:
-                        rover.SelfDesactivation()
+                        self.print(f"Kill Rover{rover.id} add {rover}")
+                        rover.state = False
+                        break
             case Rotation.S:
                 for x in range(self.x, len(self.map.matriceMap), 1):
-                    rover:Rover = self.map.IsRoverHere(x,self.y)
+                    rover:Rover = self.map.IsRoverHere(x,self.y,self)
                     if rover:
-                        rover.SelfDesactivation()
+                        self.print(f"Kill Rover{rover.id} add {rover}")
+                        rover.state = False
+                        break
             case Rotation.E:
                 for y in range(self.y, len(self.map.matriceMap[0]), 1):
-                    rover:Rover = self.map.IsRoverHere(self.x,y)
+                    rover:Rover = self.map.IsRoverHere(self.x,y,self)
                     if rover:
-                        rover.SelfDesactivation()
+                        self.print(f"Kill Rover{rover.id} add {rover}")
+                        rover.state = False
+                        break
             case Rotation.W:
                 for y in range(self.y, 0, -1):
-                    rover:Rover = self.map.IsRoverHere(self.x,y)
+                    rover:Rover = self.map.IsRoverHere(self.x,y,self)
                     if rover:
-                        rover.SelfDesactivation()
+                        self.print(f"Kill Rover{rover.id} add {rover}")
+                        rover.state = False
+                        break
                     
-    
+
 
 def main():
     # Initialize the rovers
@@ -256,9 +258,14 @@ def main():
     rover3 = Rover(ROVER_3)
     rover4 = Rover(ROVER_4)
     rover5 = Rover(ROVER_5)
+
     my_rovers = [rover1, rover2, rover3, rover4, rover5]
+
+    # for i in range(0,len(my_rovers)):
+    #     print(my_rovers[i])
     
     map = Map("map.txt",my_rovers)
+
 
     # Run the rovers in parallel
     procs = []
