@@ -40,8 +40,8 @@ class Map:
         for rover in self.rovers:
             rover.SetMap(self)
     
-    def IsRoverHere(self,x,y):
+    def IsRoverHere(self,x,y,killer):
         for rover in self.rovers:
-            if rover.x == x and rover.y == y:
+            if rover.x == x and rover.y == y and killer != rover:
                 return rover
         return None
