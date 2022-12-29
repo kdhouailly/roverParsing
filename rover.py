@@ -115,48 +115,56 @@ class Rover():
         if self.rotation == Rotation.E or self.rotation == Rotation.W:
             if (self.rotation == Rotation.E):
                 if self.__IsPossibleToMoveHere(self.x,self.y+1):
-                    self.__ChangePosition(self.x,self.y+1) 
+                    self.__ChangePosition(self.x,self.y+1)
+                    return True 
                 else:
-                    self.print("Error")
+                    return False
             else:
                 if self.__IsPossibleToMoveHere(self.x,self.y-1):
                     self.__ChangePosition(self.x,self.y-1)
+                    return True 
                 else:
-                    self.print("Error")
+                    return False
         else:
             if (self.rotation == Rotation.N):
                 if self.__IsPossibleToMoveHere(self.x-1,self.y):
                     self.__ChangePosition(self.x-1,self.y)
+                    return True 
                 else:
-                    self.print("Error")
+                    return False
             else:
                 if self.__IsPossibleToMoveHere(self.x+1,self.y):
                     self.__ChangePosition(self.x+1,self.y)
+                    return True 
                 else:
-                    self.print("Error")
+                    return False
     def MoveBackward(self):
         if self.rotation == Rotation.E or self.rotation == Rotation.W:
             if (self.rotation == Rotation.E):
                 if self.__IsPossibleToMoveHere(self.x,self.y-1):
-                    self.__ChangePosition(self.x,self.y-1) 
+                    self.__ChangePosition(self.x,self.y-1)
+                    return True  
                 else:
-                    self.print("Error")
+                    return False
             else:
                 if self.__IsPossibleToMoveHere(self.x,self.y+1):
                     self.__ChangePosition(self.x,self.y+1)
+                    return True 
                 else:
-                    self.print("Error")
+                    return False
         else:
             if (self.rotation == Rotation.N):
                 if self.__IsPossibleToMoveHere(self.x+1,self.y):
                     self.__ChangePosition(self.x+1,self.y)
+                    return True 
                 else:
-                    self.print("Error")
+                    return False
             else:
                 if self.__IsPossibleToMoveHere(self.x-1,self.y):
                     self.__ChangePosition(self.x-1,self.y)
+                    return True 
                 else:
-                    self.print("Error")
+                    return False
     def TurnLeft(self):
         self.rotation = Rotation.GetRotation(self.rotation,-1)
         self.print(f"Rotation = {self.rotation}")
@@ -198,6 +206,12 @@ class Rover():
     def MoveLeft(self):
         self.TurnLeft()
         self.MoveForward()
+    def FullForward(self):
+        while(self.MoveForward()):
+            pass
+    def FullBackward(self):
+        while(self.MoveBackward()):
+            pass
 
 
 def main():
