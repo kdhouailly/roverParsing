@@ -1,4 +1,5 @@
 import multiprocessing
+from multiprocessing.managers import BaseManager
 import pathlib
 import threading
 import time
@@ -76,9 +77,12 @@ class Rover():
         print(f"{self.name}: {msg}")
     
     def parse_and_execute_cmd(self, command):
+
         roverPythonCode = Translate.translate(ROVER_COMMAND[self.name])
         self.print ("Translated code: \n" + roverPythonCode)
         exec(roverPythonCode)
+
+        self.print("Erreur de synthaxe liée au pseudo code")
 
     def wait_for_command(self):
         start = time.time()
@@ -193,7 +197,7 @@ class Rover():
         self.map.printMap()
 
     def Info(self):
-        self.print(f"{self.rotation} ; x = {self.x} ; y = {self.y} ; state = {self.state}")
+        self.print(f"{self.rotation} ; x = {self.x} ; y = {self.y} ; state = {self.state} ; add {self}")
     
     def __IsSpecialBlock(self):
         match self.oldCase:
@@ -215,59 +219,64 @@ class Rover():
     def FullBackward(self):
         while(self.MoveBackward()):
             pass
-    def ChangeState(self, newstate=None):
-        if newstate == None:
-            self.state = not self.state
-        else:
-            self.state = newstate
     
     def Shoot(self):
+        self.print("Shoot")
         match self.rotation:
             case Rotation.N:
                 for x in range(self.x, 0, -1):
                     rover:Rover = self.map.IsRoverHere(x,self.y,self)
                     if rover:
-                        self.print(f"Kill Robot{rover.id}")
-                        rover.ChangeState(False)
-                        rover.Info()
+                        self.print(f"Kill Rover{rover.id}")
+                        rover.state = False
                         break
             case Rotation.S:
                 for x in range(self.x, len(self.map.matriceMap), 1):
                     rover:Rover = self.map.IsRoverHere(x,self.y,self)
                     if rover:
-                        self.print(f"Kill Robot{rover.id}")
-                        rover.ChangeState(False)
-                        rover.Info()
+                        self.print(f"Kill Rover{rover.id}")
+                        rover.state = False
                         break
             case Rotation.E:
                 for y in range(self.y, len(self.map.matriceMap[0]), 1):
                     rover:Rover = self.map.IsRoverHere(self.x,y,self)
                     if rover:
-                        self.print(f"Kill Robot{rover.id}")
-                        rover.ChangeState(False)
-                        rover.Info()
+                        self.print(f"Kill Rover{rover.id}")
+                        rover.state = False
                         break
             case Rotation.W:
                 for y in range(self.y, 0, -1):
                     rover:Rover = self.map.IsRoverHere(self.x,y,self)
                     if rover:
-                        self.print(f"Kill Robot{rover.id}")
-                        rover.ChangeState(False)
-                        rover.Info()
+                        self.print(f"Kill Rover{rover.id}")
+                        rover.state = False
                         break
                     
-    
+
 
 def main():
+    manager = multiprocessing.Manager()
+
+    BaseManager.register('Map', Map)
+    BaseManager.register('Rotation', Rotation)
+    BaseManager.register('Enum', Enum)
+    BaseManager.register("Rover",Rover)
+    BaseManager.register("list",list)
+
+    manager = BaseManager()
+    manager.start()
+
     # Initialize the rovers
     rover1 = Rover(ROVER_1)
     rover2 = Rover(ROVER_2)
     rover3 = Rover(ROVER_3)
     rover4 = Rover(ROVER_4)
     rover5 = Rover(ROVER_5)
+
     my_rovers = [rover1, rover2, rover3, rover4, rover5]
     
-    map = Map("map.txt",my_rovers)
+    map = manager.Map("map.txt",my_rovers)
+
 
     # Run the rovers in parallel
     procs = []

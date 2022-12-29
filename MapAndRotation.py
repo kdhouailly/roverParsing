@@ -18,6 +18,9 @@ class Map:
     def __init__(self, filename, rovers) -> None:
         self.matriceMap = []
         self.rovers = rovers
+        print()
+        for i in self.rovers:
+            print(i)
         self.SetMap(filename)
 
     def printMap(self):
@@ -42,6 +45,7 @@ class Map:
     
     def IsRoverHere(self,x,y,killer):
         for rover in self.rovers:
-            if rover.x == x and rover.y == y and killer != rover:
+            if rover.x == x and rover.y == y and rover != killer:
+                print(rover)
                 return rover
         return None
