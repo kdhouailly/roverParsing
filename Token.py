@@ -35,3 +35,6 @@ class PythonFunctionRobot(PythonDetection):
     MOVEBACKWARD = "MoveBackward"
     ISPOSSIBLE = "IsPossible"
     DRILLING = "Drilling"
+
+class SpecialBlock(PythonDetection):
+    BlockD = "D"

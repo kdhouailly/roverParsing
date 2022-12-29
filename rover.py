@@ -1,15 +1,13 @@
 import multiprocessing
 import pathlib
 import time
-import traceback
-from enum import Enum
 from random import randint
 from random import choice
-import os
 from translate import *
 from MapAndRotation import Map,Rotation
 from random import randint
 from random import choice
+from Token import SpecialBlock
 
 # The maximum amount of time that the rover can run in seconds
 MAX_RUNTIME = 36000
@@ -17,9 +15,15 @@ MAX_RUNTIME = 36000
 # Rovers that exist
 ROVER_1 = "Rover1"
 ROVER_2 = "Rover2"
+ROVER_3 = "Rover3"
+ROVER_4 = "Rover4"
+ROVER_5 = "Rover5"
 ROVERS = [
     ROVER_1,
     ROVER_2,
+    ROVER_3,
+    ROVER_4,
+    ROVER_5
 ]
 
 # Command file is stored within the rover directory. Here we're building one file
@@ -170,6 +174,7 @@ class Rover():
         self.y = y
         self.oldCase = self.map.matriceMap[self.x][self.y]
         self.map.matriceMap[self.x][self.y] = "@"
+        self.__IsSpecialBlock()
         self.map.printMap()
     # def Run(self):
     #     for action in self.actions:
@@ -177,6 +182,20 @@ class Rover():
     #         action(self)
     def Info(self):
         self.print(f"Rotation = {self.rotation} ; x = {self.x} ; y = {self.y}")
+    
+    def __IsSpecialBlock(self):
+        match self.oldCase:
+            case SpecialBlock.BlockD:
+                self.print("Une Case D")
+            case _:
+                pass
+    
+    def MoveRight(self):
+        self.TurnRight()
+        self.MoveForward()
+    def MoveLeft(self):
+        self.TurnLeft()
+        self.MoveForward()
 
 
 def main():
@@ -184,7 +203,10 @@ def main():
     map = Map("map.txt")
     rover1 = Rover(ROVER_1,map)
     rover2 = Rover(ROVER_2,map)
-    my_rovers = [rover1, rover2]
+    rover3 = Rover(ROVER_3,map)
+    rover4 = Rover(ROVER_4,map)
+    rover5 = Rover(ROVER_5,map)
+    my_rovers = [rover1, rover2, rover3, rover4, rover5]
 
     # Run the rovers in parallel
     procs = []
