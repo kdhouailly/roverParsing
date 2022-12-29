@@ -28,7 +28,7 @@ class PythonKeyWord(PythonDetection):
 
 class PythonFunctionRobot(PythonDetection):
     INFO = "INFO"
-    MAPCHANGE = "MapChange"
+    MAPCHANGE = "SetMap"
     TURNLEFT = "TurnLeft"
     TURNRIGHT = "TurnRight"
     MOVEFORWARD = "MoveForward"

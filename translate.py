@@ -43,6 +43,8 @@ class Translate:
                code += (indent + "".join(line).replace(";","") + "\n").replace("rover","self")
             elif PythonType.has_value(line[0]):
                 pass
+            elif line[0] == PythonFunctionRobot.MAPCHANGE:
+                code += (indent + "self.map." + str(PythonFunctionRobot.MAPCHANGE) + "(" + Translate.__find_between_r(" ".join(line),"(",")") + ")\n").replace(" ","")
             else:
                 print(f"Traduction error in line {nbLine}")
                 

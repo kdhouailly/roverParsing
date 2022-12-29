@@ -63,11 +63,9 @@ def get_command(rover_name):
     return False
 
 class Rover():
-    def __init__(self, name,map):
+    def __init__(self, name):
         self.name = name
-        self.map = map
         self.actions = []
-        self.__InitPositionRotation()
 
     def print(self, msg):
         print(f"{self.name}: {msg}")
@@ -98,6 +96,10 @@ class Rover():
                 # finally:
                 #     self.print("Finished running command.\n\n")
     
+    def SetMap(self, map):
+        self.map = map
+        self.__InitPositionRotation()
+
     def __InitPositionRotation(self):
         self.rotation = choice(list(Rotation))
         while True:
@@ -200,13 +202,14 @@ class Rover():
 
 def main():
     # Initialize the rovers
-    map = Map("map.txt")
-    rover1 = Rover(ROVER_1,map)
-    rover2 = Rover(ROVER_2,map)
-    rover3 = Rover(ROVER_3,map)
-    rover4 = Rover(ROVER_4,map)
-    rover5 = Rover(ROVER_5,map)
+    rover1 = Rover(ROVER_1)
+    rover2 = Rover(ROVER_2)
+    rover3 = Rover(ROVER_3)
+    rover4 = Rover(ROVER_4)
+    rover5 = Rover(ROVER_5)
     my_rovers = [rover1, rover2, rover3, rover4, rover5]
+    
+    map = Map("map.txt",my_rovers)
 
     # Run the rovers in parallel
     procs = []

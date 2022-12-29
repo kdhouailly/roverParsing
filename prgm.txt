@@ -2,8 +2,9 @@
     int k ;
     k = 0 ;
     while ( k < 2) {
-        k = k + 1
-        printe("coucou")
-        rover . MoveBackward () 
+        k = k + 1 ;
+        printe("coucou") ;
+        rover . MoveBackward () ;
+        SetMap ( "map2.txt" ) ;
     }
 }

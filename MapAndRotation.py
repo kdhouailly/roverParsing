@@ -14,16 +14,27 @@ class Rotation(Enum):
             return Rotation(actualrotation.value + sens)
 
 class Map:
-    def __init__(self,filename) -> None:
+    def __init__(self, filename, rovers) -> None:
         self.matriceMap = []
-        file = open(filename,"r")
-        code = file.readlines()
-        file.close()
-        for i in code:
-            self.matriceMap.append(list(i.strip()))
+        self.rovers = rovers
+        self.SetMap(filename)
+
     def printMap(self):
         #os.system("clear")
         print()
         for i in self.matriceMap:
             print("".join(i))
         print()
+
+    def SetMap(self,filename):
+        self.matriceMap = []
+
+        file = open(filename,"r")
+        code = file.readlines()
+        file.close()
+
+        for i in code:
+            self.matriceMap.append(list(i.strip()))
+        
+        for rover in self.rovers:
+            rover.SetMap(self)
