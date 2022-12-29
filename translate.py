@@ -24,7 +24,7 @@ class Translate:
                     tamp = list(indent)
                     tamp.pop()
                     indent = "".join(tamp)
-            elif line[1] == PythonVocab.AFFECTATION:
+            elif len(line)>1 and line[1] == PythonVocab.AFFECTATION:
                 code += indent + " ".join(line).replace(";","") + "\n"
             elif line[0] == PythonKeyWord.WHILE:
                 code += indent + str(PythonKeyWord.WHILE) + Translate.__find_between_r(" ".join(line),"(",")").replace("&&","and").replace("||","or") + ":\n"

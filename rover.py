@@ -69,10 +69,9 @@ class Rover():
         print(f"{self.name}: {msg}")
     
     def parse_and_execute_cmd(self, command):
-        roverPythonCode = Translate.translate(ROVER_COMMAND[self.name])
-        self.print ("Translated code: \n" + roverPythonCode)
-
         try:
+            roverPythonCode = Translate.translate(ROVER_COMMAND[self.name])
+            self.print ("Translated code: \n" + roverPythonCode)
             exec(roverPythonCode)
         except:
             self.print("Erreur de synthaxe liée au pseudo code")

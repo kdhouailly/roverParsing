@@ -1,9 +1,9 @@
 {
-	int i ;
     int k ;
     k = 0 ;
     while ( k < 2) {
         k = k + 1
+        printe("coucou")
         rover . MoveBackward () 
     }
 }
