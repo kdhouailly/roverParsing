@@ -193,7 +193,7 @@ class Rover():
         self.map.printMap()
 
     def Info(self):
-        self.print(f"{self.rotation} ; x = {self.x} ; y = {self.y} ; state = {self.state}")
+        self.print(f"{self.rotation} ; x = {self.x} ; y = {self.y} ; state = {self.state} ; nbD = {self.nbD}")
     
     def __IsSpecialBlock(self):
         match self.oldCase:
@@ -228,7 +228,10 @@ class Rover():
                     rover:Rover = self.map.IsRoverHere(x,self.y,self)
                     if rover:
                         self.print(f"Kill Robot{rover.id}")
-                        rover.ChangeState(False)
+                        if self.nbD == 0:
+                            rover.ChangeState(False)
+                        else:
+                            self.nbD -= 1
                         rover.Info()
                         break
             case Rotation.S:
@@ -236,7 +239,10 @@ class Rover():
                     rover:Rover = self.map.IsRoverHere(x,self.y,self)
                     if rover:
                         self.print(f"Kill Robot{rover.id}")
-                        rover.ChangeState(False)
+                        if self.nbD == 0:
+                            rover.ChangeState(False)
+                        else:
+                            self.nbD -= 1
                         rover.Info()
                         break
             case Rotation.E:
@@ -244,7 +250,10 @@ class Rover():
                     rover:Rover = self.map.IsRoverHere(self.x,y,self)
                     if rover:
                         self.print(f"Kill Robot{rover.id}")
-                        rover.ChangeState(False)
+                        if self.nbD == 0:
+                            rover.ChangeState(False)
+                        else:
+                            self.nbD -= 1
                         rover.Info()
                         break
             case Rotation.W:
@@ -252,7 +261,10 @@ class Rover():
                     rover:Rover = self.map.IsRoverHere(self.x,y,self)
                     if rover:
                         self.print(f"Kill Robot{rover.id}")
-                        rover.ChangeState(False)
+                        if self.nbD == 0:
+                            rover.ChangeState(False)
+                        else:
+                            self.nbD -= 1
                         rover.Info()
                         break
                     
