@@ -44,7 +44,7 @@ class Translate:
             elif PythonType.has_value(line[0]):
                 pass
             elif line[0] == PythonFunctionRobot.MAPCHANGE:
-                code += (indent + "self.map." + str(PythonFunctionRobot.MAPCHANGE) + "(" + Translate.__find_between_r(" ".join(line),"(",")") + ")\n").replace(" ","")
+                code += indent + "self.map." + "".join(line).replace(";","") + "\n"
             else:
                 print(f"Traduction error in line {nbLine}")
                 
