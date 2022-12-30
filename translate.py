@@ -40,12 +40,16 @@ class Translate:
             elif line[0] == PythonKeyWord.RETURN:
                 code += indent + str(PythonKeyWord.RETURN) + " " + line[1] +"\n"
             elif line[0] == PythonKeyWord.ROVER:
-               code += (indent + "".join(line).replace(";","") + "\n").replace("rover","self")
+                if line[2] == PythonFunctionRobot.MAPCHANGE:
+                    code += (indent + "self.map." + "".join(line).replace(";","") + "\n").replace(".rover","")
+                else:
+                    code += (indent + "".join(line).replace(";","") + "\n").replace("rover","self")
             elif PythonType.has_value(line[0]):
                 pass
-            elif line[0] == PythonFunctionRobot.MAPCHANGE:
-                code += indent + "self.map." + "".join(line).replace(";","") + "\n"
+            # elif line[0] == PythonFunctionRobot.MAPCHANGE:
+            #     code += indent + "self.map." + "".join(line).replace(";","") + "\n"
             elif line[0] == "#":
+                # Debug
                 code += indent + ("".join(line).replace("#","").replace(";",""))
             else:
                 print(f"Traduction error in line {nbLine}")
