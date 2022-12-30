@@ -6,7 +6,7 @@ CS403: Rapport Final Project
 
 Description of the project:
 
-	For this project, I built a game where 5 Rovers spawn on a map. They can move (forward, backward, left, right, full forward, full backward), get life point by passing over a D tile and shoot. Initially each rover has no life point and get disable if it get shoot, however it will still be active if it has life points (D). The rovers can also teleport on a new map (ex: rover . SetMap ( “map2.txt” )). 
+For this project, I built a game where 5 Rovers spawn on a map. They can move (forward, backward, left, right, full forward, full backward), get life point by passing over a D tile and shoot. Initially each rover has no life point and get disable if it get shoot, however it will still be active if it has life points (D). The rovers can also teleport on a new map (ex: rover . SetMap ( “map2.txt” )). 
 
 Information about the pseudo-code:
 
