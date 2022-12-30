@@ -1,4 +1,4 @@
 {
-    rover . TurnLeft () ;
+    rover . ChangePosition () ;
     rover . Shoot () ;
 }

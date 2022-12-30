@@ -1,18 +1,18 @@
 from enum import Enum
 
 
-class Rotation(Enum):
+class Orientation(Enum):
     N = 0
     E = 1
     S = 2
     W = 3
-    def GetRotation(actualrotation,sens):
-        if actualrotation == Rotation.N and sens == -1:
-            return Rotation.W
-        elif actualrotation ==  Rotation.W and sens == 1:
-            return Rotation.N
+    def GetOrientation(actualOrientation,sens):
+        if actualOrientation == Orientation.N and sens == -1:
+            return Orientation.W
+        elif actualOrientation ==  Orientation.W and sens == 1:
+            return Orientation.N
         else:
-            return Rotation(actualrotation.value + sens)
+            return Orientation(actualOrientation.value + sens)
 
 class Map:
     def __init__(self, filename, rovers) -> None:
@@ -46,6 +46,5 @@ class Map:
     def IsRoverHere(self,x,y,killer):
         for rover in self.rovers:
             if rover.x == x and rover.y == y and rover != killer:
-                print(rover)
                 return rover
         return None

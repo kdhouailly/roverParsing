@@ -1,12 +1,10 @@
-import multiprocessing
-from multiprocessing.managers import BaseManager
 import pathlib
 import threading
 import time
 from random import randint
 from random import choice
 from translate import *
-from MapAndRotation import Map,Rotation
+from MapAndOrientation import Map,Orientation
 from random import randint
 from random import choice
 from Token import SpecialBlock
@@ -73,110 +71,6 @@ class Rover():
         self.state = True
         self.nbD = 0
 
-    def print(self, msg):
-        print(f"{self.name}: {msg}")
-    
-    def parse_and_execute_cmd(self, command):
-
-        roverPythonCode = Translate.translate(ROVER_COMMAND[self.name])
-        self.print ("Translated code: \n" + roverPythonCode)
-        exec(roverPythonCode)
-
-        self.print("Erreur de synthaxe liée au pseudo code")
-
-    def wait_for_command(self):
-        start = time.time()
-        while (time.time() - start) < MAX_RUNTIME:
-            # Sleep 1 second before trying to check for
-            # content again
-            #self.print("Waiting for command...")
-            time.sleep(1)
-            if get_command(self.name):
-                self.print("Found a command...")
-                self.parse_and_execute_cmd(ROVER_COMMAND[self.name])
-                # try:
-                #    self.parse_and_execute_cmd(ROVER_COMMAND[self.name])
-                # except Exception as e:
-                #     self.print(f"Failed to run command: {ROVER_COMMAND[self.name]}")
-                #     self.print(traceback.format_exc())
-                # finally:
-                #     self.print("Finished running command.\n\n")
-    
-    def SetMap(self, map):
-        self.map:Map = map
-        self.__InitPositionRotation()
-
-    def __InitPositionRotation(self):
-        self.rotation = choice(list(Rotation))
-        while True:
-            self.x = randint(0,len(self.map.matriceMap)-1)
-            self.y = randint(0,len(self.map.matriceMap[0])-1)
-            if self.map.matriceMap[self.x][self.y] == " ":
-                break
-        self.print(f"Init Map : {self.rotation} ; x = {self.x} ; y = {self.y} ; state = {self.state}")
-        self.oldCase = self.map.matriceMap[self.x][self.y]
-        self.map.matriceMap[self.x][self.y] = self.id
-        self.map.printMap()
-    def MoveForward(self):
-        if self.rotation == Rotation.E or self.rotation == Rotation.W:
-            if (self.rotation == Rotation.E):
-                if self.__IsPossibleToMoveHere(self.x,self.y+1):
-                    self.__ChangePosition(self.x,self.y+1)
-                    return True 
-                else:
-                    return False
-            else:
-                if self.__IsPossibleToMoveHere(self.x,self.y-1):
-                    self.__ChangePosition(self.x,self.y-1)
-                    return True 
-                else:
-                    return False
-        else:
-            if (self.rotation == Rotation.N):
-                if self.__IsPossibleToMoveHere(self.x-1,self.y):
-                    self.__ChangePosition(self.x-1,self.y)
-                    return True 
-                else:
-                    return False
-            else:
-                if self.__IsPossibleToMoveHere(self.x+1,self.y):
-                    self.__ChangePosition(self.x+1,self.y)
-                    return True 
-                else:
-                    return False
-    def MoveBackward(self):
-        if self.rotation == Rotation.E or self.rotation == Rotation.W:
-            if (self.rotation == Rotation.E):
-                if self.__IsPossibleToMoveHere(self.x,self.y-1):
-                    self.__ChangePosition(self.x,self.y-1)
-                    return True  
-                else:
-                    return False
-            else:
-                if self.__IsPossibleToMoveHere(self.x,self.y+1):
-                    self.__ChangePosition(self.x,self.y+1)
-                    return True 
-                else:
-                    return False
-        else:
-            if (self.rotation == Rotation.N):
-                if self.__IsPossibleToMoveHere(self.x+1,self.y):
-                    self.__ChangePosition(self.x+1,self.y)
-                    return True 
-                else:
-                    return False
-            else:
-                if self.__IsPossibleToMoveHere(self.x-1,self.y):
-                    self.__ChangePosition(self.x-1,self.y)
-                    return True 
-                else:
-                    return False
-    def TurnLeft(self):
-        self.rotation = Rotation.GetRotation(self.rotation,-1)
-        self.print(f"Rotation = {self.rotation}")
-    def TurnRight(self):
-        self.rotation = Rotation.GetRotation(self.rotation,1)
-        self.print(f"Rotation = {self.rotation}")
     def __IsPossibleToMoveHere(self,x,y):
         if self.state :
             if x>=0 and x < len(self.map.matriceMap) and y>=0 and y < len(self.map.matriceMap[0]):
@@ -196,76 +90,214 @@ class Rover():
         self.__IsSpecialBlock()
         self.map.printMap()
 
-    def Info(self):
-        self.print(f"{self.rotation} ; x = {self.x} ; y = {self.y} ; state = {self.state} ; add {self}")
+    def __InitPositionOrientation(self):
+        self.orientation = choice(list(Orientation))
+        while True:
+            self.x = randint(0,len(self.map.matriceMap)-1)
+            self.y = randint(0,len(self.map.matriceMap[0])-1)
+            if self.map.matriceMap[self.x][self.y] == " ":
+                break
+        self.print(f"Init Map : {self.orientation} ; x = {self.x} ; y = {self.y} ; state = {self.state}")
+        self.oldCase = self.map.matriceMap[self.x][self.y]
+        self.map.matriceMap[self.x][self.y] = self.id
+        self.map.printMap()
+        
+    def SetMap(self, map):
+        self.map:Map = map
+        self.__InitPositionOrientation()
+        
+    def print(self, msg):
+        print(f"{self.name}: {msg}")
+      
+    def wait_for_command(self):
+        start = time.time()
+        while (time.time() - start) < MAX_RUNTIME:
+            # Sleep 1 second before trying to check for
+            # content again
+            #self.print("Waiting for command...")
+            time.sleep(1)
+            if get_command(self.name):
+                self.print("Found a command...")
+                self.parse_and_execute_cmd(ROVER_COMMAND[self.name])
+                # try:
+                #    self.parse_and_execute_cmd(ROVER_COMMAND[self.name])
+                # except Exception as e:
+                #     self.print(f"Failed to run command: {ROVER_COMMAND[self.name]}")
+                #     self.print(traceback.format_exc())
+                # finally:
+                #     self.print("Finished running command.\n\n")
+
+    def parse_and_execute_cmd(self, command):
+        roverPythonCode = Translate.translate(ROVER_COMMAND[self.name])
+        self.print ("Translated code: \n" + roverPythonCode)
+        exec(roverPythonCode)
+        #self.print("Erreur de synthaxe liée au pseudo code")
+        
     
-    def __IsSpecialBlock(self):
-        match self.oldCase:
-            case SpecialBlock.BlockD:
-                self.print("Une Case D")
-                self.nbD += 1
-            case _:
-                pass
+
+    def Info(self):
+        self.print(f"{self.orientation} ; x = {self.x} ; y = {self.y} ; state = {self.state} ; nbD = {self.nbD}")
+        
+    def MoveForward(self):
+        if self.orientation == Orientation.E or self.orientation == Orientation.W:
+            if (self.orientation == Orientation.E):
+                if self.__IsPossibleToMoveHere(self.x,self.y+1):
+                    self.__ChangePosition(self.x,self.y+1)
+                    return True 
+                else:
+                    return False
+            else:
+                if self.__IsPossibleToMoveHere(self.x,self.y-1):
+                    self.__ChangePosition(self.x,self.y-1)
+                    return True 
+                else:
+                    return False
+        else:
+            if (self.orientation == Orientation.N):
+                if self.__IsPossibleToMoveHere(self.x-1,self.y):
+                    self.__ChangePosition(self.x-1,self.y)
+                    return True 
+                else:
+                    return False
+            else:
+                if self.__IsPossibleToMoveHere(self.x+1,self.y):
+                    self.__ChangePosition(self.x+1,self.y)
+                    return True 
+                else:
+                    return False
+
+    def MoveBackward(self):
+        if self.orientation == Orientation.E or self.orientation == Orientation.W:
+            if (self.orientation == Orientation.E):
+                if self.__IsPossibleToMoveHere(self.x,self.y-1):
+                    self.__ChangePosition(self.x,self.y-1)
+                    return True  
+                else:
+                    return False
+            else:
+                if self.__IsPossibleToMoveHere(self.x,self.y+1):
+                    self.__ChangePosition(self.x,self.y+1)
+                    return True 
+                else:
+                    return False
+        else:
+            if (self.orientation == Orientation.N):
+                if self.__IsPossibleToMoveHere(self.x+1,self.y):
+                    self.__ChangePosition(self.x+1,self.y)
+                    return True 
+                else:
+                    return False
+            else:
+                if self.__IsPossibleToMoveHere(self.x-1,self.y):
+                    self.__ChangePosition(self.x-1,self.y)
+                    return True 
+                else:
+                    return False
+
+    def TurnLeft(self):
+        self.orientation = Orientation.GetOrientation(self.orientation,-1)
+        self.print(f"Orientation = {self.orientation}")
+
+    def TurnRight(self):
+        self.orientation = Orientation.GetOrientation(self.orientation,1)
+        self.print(f"Orientation = {self.orientation}")
     
     def MoveRight(self):
         self.TurnRight()
         self.MoveForward()
+
     def MoveLeft(self):
         self.TurnLeft()
         self.MoveForward()
+    
+    #The 5 added functions
+
+    #As long as the rover can, the rover moves forward 
     def FullForward(self):
         while(self.MoveForward()):
             pass
+    #As long as the rover can, the rover moves backward 
     def FullBackward(self):
         while(self.MoveBackward()):
             pass
-    
+    #The Rover changes its state from functional to disable or vice-versa
+    def ChangeState(self, newstate=None):
+        if newstate == None:
+            self.state = not self.state
+        else:
+            self.state = newstate
+    #If Rover goes over a D tile, the rover will get an extra life point
+    def __IsSpecialBlock(self):
+        match self.oldCase:
+            case SpecialBlock.BlockD:
+                self.nbD += 1
+                self.print("D tile: " + self.nbD)
+            case _:
+                pass
+    #The Rover shoots depending on its orientation
     def Shoot(self):
         self.print("Shoot")
-        match self.rotation:
-            case Rotation.N:
+        match self.orientation:
+            case Orientation.N:
                 for x in range(self.x, 0, -1):
                     rover:Rover = self.map.IsRoverHere(x,self.y,self)
                     if rover:
-                        self.print(f"Kill Rover{rover.id}")
-                        rover.state = False
+                        self.print(f"Kill Robot{rover.id}")
+                        if self.nbD == 0:
+                            rover.ChangeState(False)
+                        else:
+                            self.nbD -= 1
+                        rover.Info()
                         break
-            case Rotation.S:
+                    else:
+                        self.print("Oups the rover missed...")
+                        break
+            case Orientation.S:
                 for x in range(self.x, len(self.map.matriceMap), 1):
                     rover:Rover = self.map.IsRoverHere(x,self.y,self)
                     if rover:
-                        self.print(f"Kill Rover{rover.id}")
-                        rover.state = False
+                        self.print(f"Kill Robot{rover.id}")
+                        if self.nbD == 0:
+                            rover.ChangeState(False)
+                        else:
+                            self.nbD -= 1
+                        rover.Info()
                         break
-            case Rotation.E:
+                    else:
+                        self.print("Oups the rover missed...")
+                        break
+            case Orientation.E:
                 for y in range(self.y, len(self.map.matriceMap[0]), 1):
                     rover:Rover = self.map.IsRoverHere(self.x,y,self)
                     if rover:
-                        self.print(f"Kill Rover{rover.id}")
-                        rover.state = False
+                        self.print(f"Kill Robot{rover.id}")
+                        if self.nbD == 0:
+                            rover.ChangeState(False)
+                        else:
+                            self.nbD -= 1
+                        rover.Info()
                         break
-            case Rotation.W:
+                    else:
+                        self.print("Oups the rover missed...")
+                        break
+            case Orientation.W:
                 for y in range(self.y, 0, -1):
                     rover:Rover = self.map.IsRoverHere(self.x,y,self)
                     if rover:
-                        self.print(f"Kill Rover{rover.id}")
-                        rover.state = False
+                        self.print(f"Kill Robot{rover.id}")
+                        if self.nbD == 0:
+                            rover.ChangeState(False)
+                        else:
+                            self.nbD -= 1
+                        rover.Info()
+                        break
+                    else:
+                        self.print("Oups the rover missed...")
                         break
                     
 
 
 def main():
-    manager = multiprocessing.Manager()
-
-    BaseManager.register('Map', Map)
-    BaseManager.register('Rotation', Rotation)
-    BaseManager.register('Enum', Enum)
-    BaseManager.register("Rover",Rover)
-    BaseManager.register("list",list)
-
-    manager = BaseManager()
-    manager.start()
-
     # Initialize the rovers
     rover1 = Rover(ROVER_1)
     rover2 = Rover(ROVER_2)
@@ -275,8 +307,7 @@ def main():
 
     my_rovers = [rover1, rover2, rover3, rover4, rover5]
     
-    map = manager.Map("map.txt",my_rovers)
-
+    map = Map("map.txt",my_rovers)
 
     # Run the rovers in parallel
     procs = []
@@ -287,14 +318,8 @@ def main():
         procs.append(p)
 
     # Wait for the rovers to stop running (after MAX_RUNTIME)
-    # for p in procs:
-    #     p.join()
-
     while True:
         time.sleep(MAX_RUNTIME)
-    
-
-
 
 if __name__=="__main__":
     try:
