@@ -1,3 +1,4 @@
 {
-    rover . SetMap ( "map2.txt" ) ;
+    rover . TurnRight () ;
+    rover . Shoot () ;
 }

@@ -232,7 +232,7 @@ class Rover():
         match self.oldCase:
             case SpecialBlock.BlockD:
                 self.nbD += 1
-                self.print("D tile: " + self.nbD)
+                self.print(f"D tile: {self.nbD}")
             case _:
                 pass
     #The Rover shoots depending on its orientation
@@ -244,11 +244,11 @@ class Rover():
                 for x in range(self.x, 0, -1):
                     rover:Rover = self.map.IsRoverHere(x,self.y,self)
                     if rover:
-                        self.print(f"Kill Robot{rover.id}")
-                        if self.nbD == 0:
+                        self.print(f"Shoot Robot{rover.id}")
+                        if rover.nbD == 0:
                             rover.ChangeState(False)
                         else:
-                            self.nbD -= 1
+                            rover.nbD -= 1
                         rover.Info()
                         missed = False
                         break
