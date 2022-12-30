@@ -67,7 +67,6 @@ class Rover():
     def __init__(self, name):
         self.name = name
         self.id = name[-1]
-        self.actions = []
         self.state = True
         self.nbD = 0
 
@@ -237,6 +236,7 @@ class Rover():
     #The Rover shoots depending on its orientation
     def Shoot(self):
         self.print("Shoot")
+        missed = True
         match self.orientation:
             case Orientation.N:
                 for x in range(self.x, 0, -1):
@@ -248,10 +248,11 @@ class Rover():
                         else:
                             self.nbD -= 1
                         rover.Info()
+                        missed = False
                         break
-                    else:
-                        self.print("Oups the rover missed...")
-                        break
+                if missed:
+                    self.print("Oups the rover missed")
+                    
             case Orientation.S:
                 for x in range(self.x, len(self.map.matriceMap), 1):
                     rover:Rover = self.map.IsRoverHere(x,self.y,self)
@@ -262,10 +263,11 @@ class Rover():
                         else:
                             self.nbD -= 1
                         rover.Info()
-                        break
-                    else:
-                        self.print("Oups the rover missed...")
-                        break
+                        missed = False
+                        break        
+                if missed:
+                    self.print("Oups the rover missed")
+
             case Orientation.E:
                 for y in range(self.y, len(self.map.matriceMap[0]), 1):
                     rover:Rover = self.map.IsRoverHere(self.x,y,self)
@@ -276,10 +278,11 @@ class Rover():
                         else:
                             self.nbD -= 1
                         rover.Info()
+                        missed = False
                         break
-                    else:
-                        self.print("Oups the rover missed...")
-                        break
+                if missed:
+                    self.print("Oups the rover missed")
+
             case Orientation.W:
                 for y in range(self.y, 0, -1):
                     rover:Rover = self.map.IsRoverHere(self.x,y,self)
@@ -290,10 +293,10 @@ class Rover():
                         else:
                             self.nbD -= 1
                         rover.Info()
+                        missed = False
                         break
-                    else:
-                        self.print("Oups the rover missed...")
-                        break
+                if missed:
+                    self.print("Oups the rover missed")
                     
 
 

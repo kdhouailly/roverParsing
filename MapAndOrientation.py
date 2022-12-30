@@ -42,6 +42,7 @@ class Map:
         for rover in self.rovers:
             rover.SetMap(self)
     
+    #Check if a rover is on the rover's orientation
     def IsRoverHere(self,x,y,killer):
         for rover in self.rovers:
             if rover.x == x and rover.y == y and rover != killer:
