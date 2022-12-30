@@ -69,6 +69,7 @@ class Rover():
         self.id = name[-1]
         self.state = True
         self.nbD = 0
+        self.map = None
 
     def __IsPossibleToMoveHere(self,x,y):
         if self.state :
@@ -102,7 +103,8 @@ class Rover():
         self.map.printMap()
         
     def SetMap(self, map):
-        self.map:Map = map
+        if self.map == None:
+            self.map:Map = map
         self.__InitPositionOrientation()
         
     def print(self, msg):
