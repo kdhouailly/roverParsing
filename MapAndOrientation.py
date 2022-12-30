@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class Orientation(Enum):
     N = 0
     E = 1
